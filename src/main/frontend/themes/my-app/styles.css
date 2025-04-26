@@ -1,1 +1,4 @@
-@import url('./main-layout.css');
+:root {
+    --lumo-primary-color: #4a484a;
+    --lumo-border-radius: 0.5em;
+}

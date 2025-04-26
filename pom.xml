@@ -52,6 +52,7 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring-boot-starter</artifactId>
+            <version>24.7.1</version>
         </dependency>
         <dependency>
             <groupId>org.parttio</groupId>
@@ -89,6 +90,20 @@
             <artifactId>vaadin-testbench-junit5</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>3.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>6.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -109,7 +124,7 @@
                             <file>${project.basedir}/eclipse-formatter.xml</file>
                         </eclipse>
                     </java>
-                    <!-- Uncomment to format TypeScript files 
+                    <!-- Uncomment to format TypeScript files
                         <typescript>
                         <includes>
                             <include>src/main/frontend/**/*.ts</include>

@@ -2,10 +2,7 @@ package com.example.application.views;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.SvgIcon;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
@@ -15,6 +12,9 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.server.menu.MenuConfiguration;
 import com.vaadin.flow.server.menu.MenuEntry;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.util.List;
 
 /**
@@ -55,20 +55,38 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        List<MenuEntry> menuEntries = MenuConfiguration.getMenuEntries();
-        menuEntries.forEach(entry -> {
-            if (entry.icon() != null) {
-                nav.addItem(new SideNavItem(entry.title(), entry.path(), new SvgIcon(entry.icon())));
-            } else {
-                nav.addItem(new SideNavItem(entry.title(), entry.path()));
-            }
-        });
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAuthenticated = auth != null && auth.isAuthenticated();
+
+        // Käyttäjän roolit
+        boolean isUser = isAuthenticated && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_USER") || a.getAuthority().equals("ROLE_ADMIN"));
+        boolean isAdmin = isAuthenticated && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+
+        nav.addItem(new SideNavItem("Home", "home"));
+
+        if (isUser) {
+            nav.addItem(new SideNavItem("User", "user"));
+        }
+
+        if (isAdmin) {
+            nav.addItem(new SideNavItem("Admin", "admin"));
+        }
 
         return nav;
     }
 
     private Footer createFooter() {
         Footer layout = new Footer();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth != null && auth.isAuthenticated()) {
+            layout.add(new Span("Logged in as: " + auth.getName()), new Span(" | "), new Anchor("/logout", "Logout"));
+        } else {
+            layout.add(new Span("Not logged in"));
+        }
 
         return layout;
     }
